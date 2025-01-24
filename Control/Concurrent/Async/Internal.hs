@@ -715,9 +715,13 @@ concurrentlyE left right = concurrently' left right (collect [])
             Left ex -> throwIO ex
             Right r -> collect (r:xs) m
 
-concurrently' :: IO a -> IO b
-             -> (IO (Either SomeException (Either a b)) -> IO r)
-             -> IO r
+concurrently' ::
+#ifdef DEBUG_AUTO_LABEL
+  HasCallStack =>
+#endif
+  IO a -> IO b
+  -> (IO (Either SomeException (Either a b)) -> IO r)
+  -> IO r
 concurrently' left right collect = do
     done <- newEmptyMVar
     mask $ \restore -> do
