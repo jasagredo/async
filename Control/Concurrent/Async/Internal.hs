@@ -756,6 +756,7 @@ concurrently' left right collect = do
                   -- putMVar.
                   when (count' > 0) $
                     void $ forkIO $ do
+                      myThreadId >>= flip labelThread "concurrent stop"
                       throwTo rid AsyncCancelled
                       throwTo lid AsyncCancelled
                   -- ensure the children are really dead
